@@ -2,7 +2,8 @@ document.getElementById('verificaButton').addEventListener('click', verificaTurn
 
 async function caricaTurni() {
     try {
-        const response = await fetch('data/turni.ods');
+        const fileId = '1aY577QY5F0HAv5w2Qo5-lJUrlPD7K2xG'; // Usa l'ID del tuo file
+        const response = await fetch(`https://drive.google.com/uc?export=download&id=${fileId}`);
         if (!response.ok) {
             throw new Error('Errore nel recupero del file: ' + response.statusText + ' (' + response.status + ')');
         }
@@ -13,7 +14,6 @@ async function caricaTurni() {
         const worksheet = workbook.Sheets[firstSheetName];
         const jsonSheet = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-        // Funzione per convertire le date Excel in formato `dd/mm/yyyy`
         function excelDateToJSDate(serial) {
             const utc_days = Math.floor(serial - 25569);
             const utc_value = utc_days * 86400;
@@ -60,10 +60,8 @@ async function verificaTurno() {
 
         console.log("Dati inseriti:", { motoscafo, data, dataFormattata });
 
-        // Aggiungi un log per controllare le date nel file turni.ods
         turni.forEach(turno => console.log(`Motoscafo: ${turno.MOTOSCAFO}, Data: ${turno.DATA}, Turno: ${turno.TURNO}`));
 
-        // Confronta le date come stringhe normalizzate
         const turnoTrovato = turni.find(turno => 
             turno.MOTOSCAFO == motoscafo && turno.DATA === dataFormattata);
 
@@ -80,4 +78,3 @@ async function verificaTurno() {
         outputDiv.innerHTML = "Per favore, seleziona un numero di motoscafo e una data.";
     }
 }
-
