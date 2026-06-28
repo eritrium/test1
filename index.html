@@ -22,6 +22,7 @@
   --text-tertiary: #9e9d99;
   --border: rgba(0,0,0,0.12);
   --border-hover: rgba(0,0,0,0.25);
+  --accent: #185FA5;
   --radius-md: 8px;
   --radius-lg: 12px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -38,38 +39,90 @@
     --text-tertiary: #6b6b67;
     --border: rgba(255,255,255,0.10);
     --border-hover: rgba(255,255,255,0.22);
+    --accent: #378ADD;
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text); min-height: 100vh; overscroll-behavior: none; }
-.app-shell { max-width: 680px; margin: 0 auto; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
+body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text); min-height: 100vh; overscroll-behavior: none; padding-bottom: calc(65px + var(--safe-bottom)); } /* Added bottom padding for bar */
+.app-shell { max-width: 680px; margin: 0 auto; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
 
 header {
-  padding: calc(var(--safe-top) + 1rem) 1.5rem 0;
+  padding: calc(var(--safe-top) + 1.2rem) 1.5rem 1rem;
   border-bottom: 0.5px solid var(--border);
   position: sticky; top: 0; z-index: 10;
   background: var(--bg);
 }
-.app-title { font-size: 17px; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; color: var(--text); }
-.app-title i { font-size: 20px; color: var(--text-secondary); }
-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
-nav::-webkit-scrollbar { display: none; }
-.nav-btn { flex: 1; min-width: 0; padding: 11px 4px; font-size: 11px; font-weight: 500; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; font-family: var(--font); transition: color 0.15s; }
-.nav-btn.active { color: var(--text); border-bottom-color: var(--text); }
-.nav-btn:hover:not(.active) { color: var(--text); background: var(--bg-secondary); }
-.nav-badge { background: #E24B4A; color: #fff; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+.app-title { font-size: 19px; font-weight: 600; display: flex; align-items: center; gap: 10px; color: var(--text); }
+.app-title i { font-size: 22px; color: var(--accent); } /* Use accent color for title icon */
 
-main { padding: 1.25rem 1.5rem; flex: 1; padding-bottom: calc(1.5rem + var(--safe-bottom)); }
+/* Modern Bottom Navigation Bar */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 680px;
+  background: var(--bg);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 10px calc(10px + var(--safe-bottom));
+  z-index: 20;
+}
+.nav-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-tertiary); /* Dimmer color for inactive */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px;
+  transition: color 0.15s, transform 0.1s;
+  position: relative; /* For badge */
+}
+.nav-btn.active {
+  color: var(--accent); /* Accent color for active */
+}
+.nav-btn i {
+  font-size: 22px; /* Large icons for mobile */
+}
+.nav-label {
+  font-size: 10px; /* Small label below icon */
+  font-weight: 500;
+}
+.nav-btn:active {
+  transform: scale(0.95); /* Provide click feedback */
+}
+.nav-badge {
+  position: absolute;
+  top: -2px;
+  right: 18px; /* Offset badge */
+  background: #E24B4A;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 10px;
+  min-width: 17px;
+  text-align: center;
+}
+
+main { padding: 1.25rem 1.5rem; flex: 1; }
 .screen { display: none; }
 .screen.active { display: block; }
 
 .section-title { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
 .field-group { margin-bottom: 1rem; }
 label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
-input, select { width: 100%; padding: 9px 12px; font-size: 15px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: var(--font); transition: border-color 0.15s, box-shadow 0.15s; appearance: none; -webkit-appearance: none; }
+input, select { width: 100%; padding: 10px 13px; font-size: 16px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: var(--font); transition: border-color 0.15s, box-shadow 0.15s; appearance: none; -webkit-appearance: none; }
 input:focus, select:focus { outline: none; border-color: var(--text-secondary); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.btn-primary { width: 100%; padding: 12px; font-size: 15px; font-weight: 500; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); cursor: pointer; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); transition: opacity 0.15s; }
+.btn-primary { width: 100%; padding: 13px; font-size: 16px; font-weight: 500; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); cursor: pointer; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); transition: opacity 0.15s; }
 .btn-primary:active { opacity: 0.75; }
 
 .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
@@ -87,7 +140,7 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
   .badge-assigned { background: #04342C; color: #5DCAA5; }
 }
 .card-row { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
-.card-row i { font-size: 15px; flex-shrink: 0; }
+.card-row i { font-size: 15px; flex-shrink: 0; color: var(--text-tertiary); }
 .card-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-sm { padding: 7px 14px; font-size: 13px; font-weight: 500; border-radius: var(--radius-md); cursor: pointer; border: 0.5px solid var(--border-hover); background: transparent; color: var(--text); display: flex; align-items: center; gap: 6px; font-family: var(--font); transition: background 0.12s; }
 .btn-sm:active { opacity: 0.7; }
@@ -100,9 +153,9 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 .driver-select { margin-top: 10px; }
 .driver-select select { font-size: 14px; }
 
-.empty { text-align: center; padding: 3rem 1rem; color: var(--text-secondary); font-size: 14px; }
-.empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.35; }
-.empty-sub { font-size: 12px; margin-top: 6px; color: var(--text-tertiary); }
+.empty { text-align: center; padding: 4rem 1rem; color: var(--text-secondary); font-size: 15px; }
+.empty i { font-size: 45px; display: block; margin-bottom: 15px; opacity: 0.25; }
+.empty-sub { font-size: 13px; margin-top: 6px; color: var(--text-tertiary); }
 
 .storico-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 8px; }
 .storico-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
@@ -112,9 +165,9 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 .driver-badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: #E6F1FB; color: #0C447C; margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; }
 @media (prefers-color-scheme: dark) { .driver-badge { background: #042C53; color: #85B7EB; } }
 
-.filter-bar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
-.filter-btn { padding: 6px 14px; font-size: 12px; font-weight: 500; border-radius: 20px; cursor: pointer; border: 0.5px solid var(--border-hover); background: transparent; color: var(--text-secondary); font-family: var(--font); transition: all 0.12s; }
-.filter-btn.active { background: var(--text); color: var(--bg); border-color: transparent; }
+.filter-bar { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.filter-btn { padding: 7px 16px; font-size: 13px; font-weight: 500; border-radius: 20px; cursor: pointer; border: 0.5px solid var(--border-hover); background: transparent; color: var(--text-secondary); font-family: var(--font); transition: all 0.12s; }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
 
 .notif-bar { background: #FAEEDA; border: 1px solid #EF9F27; border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
 @media (prefers-color-scheme: dark) { .notif-bar { background: #412402; border-color: #854F0B; } }
@@ -130,7 +183,7 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 .count-pill { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: var(--bg-secondary); color: var(--text-secondary); }
 .timeline-date { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin: 1rem 0 8px; }
 .timeline-date:first-child { margin-top: 0; }
-.prossima-info { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 1rem; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.prossima-info { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 1.25rem; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
 
 #notif-container { padding: 0 1.5rem; padding-top: 12px; }
 #notif-container:empty { padding: 0; }
@@ -142,13 +195,13 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 
 /* Autisti screen */
 .autista-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
-.autista-avatar { width: 42px; height: 42px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #0C447C; flex-shrink: 0; }
+.autista-avatar { width: 44px; height: 44px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 16px; color: #0C447C; flex-shrink: 0; }
 @media (prefers-color-scheme: dark) { .autista-avatar { background: #042C53; color: #85B7EB; } }
 .autista-info { flex: 1; min-width: 0; }
-.autista-nome { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.autista-nome { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
 .autista-tel { font-size: 13px; color: var(--text-secondary); }
 .autista-actions { display: flex; gap: 8px; }
-.btn-icon { width: 36px; height: 36px; border-radius: var(--radius-md); border: 0.5px solid var(--border-hover); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 18px; transition: background 0.12s; }
+.btn-icon { width: 38px; height: 38px; border-radius: var(--radius-md); border: 0.5px solid var(--border-hover); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 19px; transition: background 0.12s; }
 .btn-icon:active { opacity: 0.7; }
 .btn-icon.wa { background: #25D366; color: #fff; border-color: transparent; }
 .btn-icon.del { color: #A32D2D; border-color: #F7C1C1; }
@@ -176,13 +229,6 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 <div class="app-shell">
   <header>
     <div class="app-title"><i class="ti ti-car" aria-hidden="true"></i> Taxi Gestionale</div>
-    <nav>
-      <button class="nav-btn active" onclick="showScreen('inserimento', this)"><i class="ti ti-plus" aria-hidden="true"></i> Nuova</button>
-      <button class="nav-btn" onclick="showScreen('prenotazioni', this)" id="nav-prenotazioni"><i class="ti ti-calendar" aria-hidden="true"></i> Corse</button>
-      <button class="nav-btn" onclick="showScreen('assegnazione', this)" id="nav-assegnazione"><i class="ti ti-send" aria-hidden="true"></i> Assegna</button>
-      <button class="nav-btn" onclick="showScreen('autisti', this)"><i class="ti ti-users" aria-hidden="true"></i> Autisti</button>
-      <button class="nav-btn" onclick="showScreen('storico', this)"><i class="ti ti-history" aria-hidden="true"></i> Storico</button>
-    </nav>
   </header>
 
   <div id="notif-container"></div>
@@ -272,6 +318,32 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
       <div id="lista-storico"></div>
     </div>
   </main>
+
+  <!-- Modern Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('inserimento', this)">
+      <i class="ti ti-plus" aria-hidden="true"></i>
+      <span class="nav-label">Nuova</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('prenotazioni', this)" id="nav-prenotazioni">
+      <i class="ti ti-calendar-event" aria-hidden="true"></i>
+      <span class="nav-label">Corse</span>
+      <span id="nav-badge-corse"></span> <!-- Badge container -->
+    </button>
+    <button class="nav-btn" onclick="showScreen('assegnazione', this)" id="nav-assegnazione">
+      <i class="ti ti-send" aria-hidden="true"></i>
+      <span class="nav-label">Assegna</span>
+      <span id="nav-badge-assegna"></span> <!-- Badge container -->
+    </button>
+    <button class="nav-btn" onclick="showScreen('autisti', this)">
+      <i class="ti ti-users" aria-hidden="true"></i>
+      <span class="nav-label">Autisti</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('storico', this)">
+      <i class="ti ti-history" aria-hidden="true"></i>
+      <span class="nav-label">Storico</span>
+    </button>
+  </nav>
 </div>
 
 <script>
@@ -373,12 +445,13 @@ function prossimaCorsaFutura() {
 
 // ── Nav badges ─────────────────────────────────────────────────────────────
 function aggiornaNavBadge() {
-  const btnA = document.getElementById('nav-assegnazione');
-  const btnP = document.getElementById('nav-prenotazioni');
+  const badgeA = document.getElementById('nav-badge-assegna');
+  const badgeP = document.getElementById('nav-badge-corse');
   const future = corseFuture();
   const imminenti = corseImminenti();
-  btnA.innerHTML = `<i class="ti ti-send" aria-hidden="true"></i> Assegna${imminenti.length > 0 ? ` <span class="nav-badge">${imminenti.length}</span>` : ''}`;
-  btnP.innerHTML = `<i class="ti ti-calendar" aria-hidden="true"></i> Corse${future.length > 0 ? ` <span class="nav-badge" style="background:#185FA5">${future.length}</span>` : ''}`;
+
+  badgeA.innerHTML = imminenti.length > 0 ? `<span class="nav-badge">${imminenti.length}</span>` : '';
+  badgeP.innerHTML = future.length > 0 ? `<span class="nav-badge">${future.length}</span>` : '';
 }
 
 // ── Inserimento corsa ──────────────────────────────────────────────────────
@@ -407,7 +480,7 @@ function renderPrenotazioni() {
   const el = document.getElementById('lista-prenotazioni');
   const future = corseFuture();
   document.getElementById('count-prenotazioni').textContent = future.length === 1 ? '1 corsa' : future.length + ' corse';
-  if (future.length === 0) { el.innerHTML = '<div class="empty"><i class="ti ti-calendar"></i>Nessuna corsa futura prenotata</div>'; return; }
+  if (future.length === 0) { el.innerHTML = '<div class="empty"><i class="ti ti-calendar-event"></i>Nessuna corsa futura prenotata</div>'; return; }
   let html = ''; let lastDate = '';
   future.forEach(c => {
     const dataLabel = formatDataLabel(c.data);
@@ -418,7 +491,7 @@ function renderPrenotazioni() {
     const isEditing = editingId === c.id;
     html += `<div class="card ${imminente ? 'imminente' : ''}">
       <div class="card-header">
-        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;"></i>${esc(c.cliente)}</div>
+        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;color:var(--text-tertiary);"></i>${esc(c.cliente)}</div>
         <div style="display:flex;align-items:center;gap:6px;">
           <span class="badge ${imminente ? 'badge-imminente' : 'badge-future'}">${imminente ? '<i class="ti ti-bell" aria-hidden="true" style="font-size:11px;"></i> Imminente' : c.orario}</span>
           <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleEdit(${c.id})" aria-label="Modifica">
@@ -495,7 +568,7 @@ function renderAssegnazione() {
     if (prossima) {
       const m = minutiMancanti(prossima);
       const mancano = m !== null ? (m < 60 ? `${Math.round(m)} min` : `${Math.floor(m/60)}h ${Math.round(m%60)}min`) : '';
-      infoEl.innerHTML = `<div class="prossima-info"><i class="ti ti-clock" aria-hidden="true"></i> Prossima corsa tra ${mancano}: <strong>${esc(prossima.cliente)}</strong> alle ${prossima.orario}</div>`;
+      infoEl.innerHTML = `<div class="prossima-info"><i class="ti ti-clock" aria-hidden="true" style="color:var(--text-tertiary);"></i> Prossima corsa tra ${mancano}: <strong>${esc(prossima.cliente)}</strong> alle ${prossima.orario}</div>`;
     } else { infoEl.innerHTML = ''; }
     el.innerHTML = `<div class="empty"><i class="ti ti-send"></i>Nessuna corsa da assegnare ora<p class="empty-sub">Le corse appaiono qui 15 minuti prima dell'orario</p></div>`;
     return;
@@ -512,7 +585,7 @@ function renderAssegnazione() {
     const dataStr = c.data ? formatData(c.data) + ' ' : '';
     return `<div class="card imminente">
       <div class="card-header">
-        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;"></i>${esc(c.cliente)}</div>
+        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;color:var(--text-tertiary);"></i>${esc(c.cliente)}</div>
         <span class="badge badge-imminente"><i class="ti ti-bell" aria-hidden="true" style="font-size:11px;"></i> ${mStr}</span>
       </div>
       <div class="card-row"><i class="ti ti-map-pin"></i> ${esc(c.partenza)}</div>
@@ -666,7 +739,7 @@ function renderStorico() {
     const tel = c.autistaTel ? c.autistaTel.replace(/\s+/g,'').replace(/^\+/,'') : '';
     return `<div class="storico-item">
       <div class="storico-header">
-        <span class="storico-title"><i class="ti ti-user" aria-hidden="true" style="font-size:13px;margin-right:4px;"></i>${esc(c.cliente)}</span>
+        <span class="storico-title"><i class="ti ti-user" aria-hidden="true" style="font-size:13px;margin-right:4px;color:var(--text-tertiary);"></i>${esc(c.cliente)}</span>
         <span class="storico-date">${assegnataStr}</span>
       </div>
       <div class="storico-row"><i class="ti ti-map-pin" aria-hidden="true"></i> ${esc(c.partenza)} → ${esc(c.destinazione)}</div>
@@ -747,7 +820,7 @@ function mostraFeedback(msg, tipo) {
   const id = 'fb-' + Date.now();
   const div = document.createElement('div');
   div.id = id;
-  div.style.cssText = `background:${bgMap[tipo]};border:1px solid ${borderMap[tipo]};border-radius:8px;padding:9px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:13px;color:${colorMap[tipo]};font-weight:500;font-family:var(--font);`;
+  div.style.cssText = `background:${bgMap[tipo]};border:1px solid ${borderMap[tipo]};border-radius:8px;padding:9px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:13px;color:${colorMap[tipo]};font-weight:500;font-family:var(--font);z-index:30;position:relative;`;
   div.innerHTML = `<i class="ti ${iconMap[tipo]}" aria-hidden="true"></i> ${esc(msg)}`;
   document.getElementById('notif-container').appendChild(div);
   setTimeout(() => { const el = document.getElementById(id); if (el) el.remove(); }, 2500);
