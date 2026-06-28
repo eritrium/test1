@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Taxi" />
+<meta name="theme-color" content="#1c1c1a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<title>Taxi Gestionale</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f5f5f4;
+  --bg-tertiary: #eeece8;
+  --text: #1a1a18;
+  --text-secondary: #6b6b67;
+  --text-tertiary: #9e9d99;
+  --border: rgba(0,0,0,0.12);
+  --border-hover: rgba(0,0,0,0.25);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1a;
+    --bg-secondary: #252523;
+    --bg-tertiary: #2e2e2b;
+    --text: #f0ede8;
+    --text-secondary: #9e9d99;
+    --text-tertiary: #6b6b67;
+    --border: rgba(255,255,255,0.10);
+    --border-hover: rgba(255,255,255,0.22);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text); min-height: 100vh; overscroll-behavior: none; }
+.app-shell { max-width: 680px; margin: 0 auto; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; }
+
+header {
+  padding: calc(var(--safe-top) + 1rem) 1.5rem 0;
+  border-bottom: 0.5px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+}
+.app-title { font-size: 17px; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; color: var(--text); }
+.app-title i { font-size: 20px; color: var(--text-secondary); }
+nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+nav::-webkit-scrollbar { display: none; }
+.nav-btn { flex: 1; min-width: 0; padding: 11px 4px; font-size: 11px; font-weight: 500; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; font-family: var(--font); transition: color 0.15s; }
+.nav-btn.active { color: var(--text); border-bottom-color: var(--text); }
+.nav-btn:hover:not(.active) { color: var(--text); background: var(--bg-secondary); }
+.nav-badge { background: #E24B4A; color: #fff; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+
+main { padding: 1.25rem 1.5rem; flex: 1; padding-bottom: calc(1.5rem + var(--safe-bottom)); }
+.screen { display: none; }
+.screen.active { display: block; }
+
+.section-title { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.field-group { margin-bottom: 1rem; }
+label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+input, select { width: 100%; padding: 9px 12px; font-size: 15px; border: 0.5px solid var(--border-hover); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: var(--font); transition: border-color 0.15s, box-shadow 0.15s; appearance: none; -webkit-appearance: none; }
+input:focus, select:focus { outline: none; border-color: var(--text-secondary); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-primary { width: 100%; padding: 12px; font-size: 15px; font-weight: 500; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-md); cursor: pointer; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); transition: opacity 0.15s; }
+.btn-primary:active { opacity: 0.75; }
+
+.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
+.card.imminente { border: 1.5px solid #EF9F27; background: rgba(250,238,218,0.10); }
+@media (prefers-color-scheme: dark) { .card.imminente { background: rgba(99,56,6,0.15); } }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+.card-title { font-size: 14px; font-weight: 500; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+.badge-imminente { background: #FAEEDA; color: #633806; display: inline-flex; align-items: center; gap: 4px; }
+.badge-future { background: #E6F1FB; color: #0C447C; }
+.badge-assigned { background: #E1F5EE; color: #085041; }
+@media (prefers-color-scheme: dark) {
+  .badge-imminente { background: #412402; color: #FAC775; }
+  .badge-future { background: #042C53; color: #85B7EB; }
+  .badge-assigned { background: #04342C; color: #5DCAA5; }
+}
+.card-row { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+.card-row i { font-size: 15px; flex-shrink: 0; }
+.card-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-sm { padding: 7px 14px; font-size: 13px; font-weight: 500; border-radius: var(--radius-md); cursor: pointer; border: 0.5px solid var(--border-hover); background: transparent; color: var(--text); display: flex; align-items: center; gap: 6px; font-family: var(--font); transition: background 0.12s; }
+.btn-sm:active { opacity: 0.7; }
+.btn-sm.confirm { background: var(--text); color: var(--bg); border-color: transparent; }
+.btn-sm.danger { color: #A32D2D; border-color: #F7C1C1; }
+.btn-sm.whatsapp { background: #25D366; color: #fff; border-color: transparent; }
+.btn-sm.whatsapp:hover { background: #1ebe5d; }
+@media (prefers-color-scheme: dark) { .btn-sm.danger { color: #F09595; border-color: #791F1F; } }
+
+.driver-select { margin-top: 10px; }
+.driver-select select { font-size: 14px; }
+
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text-secondary); font-size: 14px; }
+.empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.35; }
+.empty-sub { font-size: 12px; margin-top: 6px; color: var(--text-tertiary); }
+
+.storico-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 8px; }
+.storico-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+.storico-title { font-size: 13px; font-weight: 500; }
+.storico-date { font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+.storico-row { font-size: 12px; color: var(--text-secondary); display: flex; gap: 6px; align-items: center; margin-bottom: 3px; }
+.driver-badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: #E6F1FB; color: #0C447C; margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; }
+@media (prefers-color-scheme: dark) { .driver-badge { background: #042C53; color: #85B7EB; } }
+
+.filter-bar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+.filter-btn { padding: 6px 14px; font-size: 12px; font-weight: 500; border-radius: 20px; cursor: pointer; border: 0.5px solid var(--border-hover); background: transparent; color: var(--text-secondary); font-family: var(--font); transition: all 0.12s; }
+.filter-btn.active { background: var(--text); color: var(--bg); border-color: transparent; }
+
+.notif-bar { background: #FAEEDA; border: 1px solid #EF9F27; border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+@media (prefers-color-scheme: dark) { .notif-bar { background: #412402; border-color: #854F0B; } }
+.notif-bar i { font-size: 18px; color: #854F0B; flex-shrink: 0; margin-top: 1px; }
+.notif-bar-text { font-size: 13px; color: #633806; flex: 1; }
+@media (prefers-color-scheme: dark) { .notif-bar-text { color: #FAC775; } }
+.notif-bar-title { font-weight: 500; margin-bottom: 2px; }
+.notif-bar-sub { font-size: 12px; }
+.notif-bar-close { background: none; border: none; cursor: pointer; color: #854F0B; font-size: 18px; padding: 0; flex-shrink: 0; line-height: 1; }
+@media (prefers-color-scheme: dark) { .notif-bar-close, .notif-bar i { color: #FAC775; } }
+
+.prenotazioni-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.count-pill { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; background: var(--bg-secondary); color: var(--text-secondary); }
+.timeline-date { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin: 1rem 0 8px; }
+.timeline-date:first-child { margin-top: 0; }
+.prossima-info { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 1rem; font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+
+#notif-container { padding: 0 1.5rem; padding-top: 12px; }
+#notif-container:empty { padding: 0; }
+
+.edit-form { margin-top: 12px; border-top: 0.5px solid var(--border); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.edit-form label { font-size: 12px; color: var(--text-secondary); margin-bottom: 3px; font-weight: 500; }
+.edit-form input { font-size: 13px; padding: 7px 10px; }
+.edit-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+/* Autisti screen */
+.autista-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+.autista-avatar { width: 42px; height: 42px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: #0C447C; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .autista-avatar { background: #042C53; color: #85B7EB; } }
+.autista-info { flex: 1; min-width: 0; }
+.autista-nome { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.autista-tel { font-size: 13px; color: var(--text-secondary); }
+.autista-actions { display: flex; gap: 8px; }
+.btn-icon { width: 36px; height: 36px; border-radius: var(--radius-md); border: 0.5px solid var(--border-hover); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 18px; transition: background 0.12s; }
+.btn-icon:active { opacity: 0.7; }
+.btn-icon.wa { background: #25D366; color: #fff; border-color: transparent; }
+.btn-icon.del { color: #A32D2D; border-color: #F7C1C1; }
+@media (prefers-color-scheme: dark) { .btn-icon.del { color: #F09595; border-color: #791F1F; } }
+
+.add-autista-form { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.add-autista-form .section-title { margin-bottom: 10px; }
+
+.divider { height: 0.5px; background: var(--border); margin: 1rem 0; }
+
+/* Install banner */
+.install-banner { background: #E6F1FB; border: 1px solid #B5D4F4; border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+@media (prefers-color-scheme: dark) { .install-banner { background: #042C53; border-color: #185FA5; } }
+.install-banner-text { flex: 1; font-size: 13px; color: #0C447C; }
+@media (prefers-color-scheme: dark) { .install-banner-text { color: #85B7EB; } }
+.install-banner-title { font-weight: 500; margin-bottom: 2px; }
+.install-banner-sub { font-size: 12px; opacity: 0.8; }
+.install-banner i { font-size: 20px; color: #185FA5; flex-shrink: 0; }
+@media (prefers-color-scheme: dark) { .install-banner i { color: #85B7EB; } }
+.install-btn { background: #185FA5; color: #fff; border: none; border-radius: var(--radius-md); padding: 6px 14px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 8px; font-family: var(--font); }
+@media (prefers-color-scheme: dark) { .install-btn { background: #378ADD; } }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header>
+    <div class="app-title"><i class="ti ti-car" aria-hidden="true"></i> Taxi Gestionale</div>
+    <nav>
+      <button class="nav-btn active" onclick="showScreen('inserimento', this)"><i class="ti ti-plus" aria-hidden="true"></i> Nuova</button>
+      <button class="nav-btn" onclick="showScreen('prenotazioni', this)" id="nav-prenotazioni"><i class="ti ti-calendar" aria-hidden="true"></i> Corse</button>
+      <button class="nav-btn" onclick="showScreen('assegnazione', this)" id="nav-assegnazione"><i class="ti ti-send" aria-hidden="true"></i> Assegna</button>
+      <button class="nav-btn" onclick="showScreen('autisti', this)"><i class="ti ti-users" aria-hidden="true"></i> Autisti</button>
+      <button class="nav-btn" onclick="showScreen('storico', this)"><i class="ti ti-history" aria-hidden="true"></i> Storico</button>
+    </nav>
+  </header>
+
+  <div id="notif-container"></div>
+
+  <main>
+    <!-- NUOVA CORSA -->
+    <div id="screen-inserimento" class="screen active">
+      <div id="install-banner-container"></div>
+      <p class="section-title">Inserisci nuova corsa</p>
+      <div class="field-group">
+        <label>Cliente</label>
+        <input type="text" id="cliente" placeholder="Nome e cognome" autocomplete="name" />
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label>Partenza</label>
+          <input type="text" id="partenza" placeholder="Via, città..." />
+        </div>
+        <div class="field-group">
+          <label>Destinazione</label>
+          <input type="text" id="destinazione" placeholder="Via, città..." />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field-group">
+          <label>Data</label>
+          <input type="date" id="data" />
+        </div>
+        <div class="field-group">
+          <label>Orario</label>
+          <input type="time" id="orario" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Note aggiuntive</label>
+        <input type="text" id="note" placeholder="Voli, bagagli, particolarità..." />
+      </div>
+      <button class="btn-primary" onclick="aggiungiCorsa()">
+        <i class="ti ti-plus" aria-hidden="true"></i> Aggiungi corsa
+      </button>
+    </div>
+
+    <!-- PRENOTAZIONI -->
+    <div id="screen-prenotazioni" class="screen">
+      <div class="prenotazioni-header">
+        <p class="section-title" style="margin:0;">Servizi futuri</p>
+        <span class="count-pill" id="count-prenotazioni">0 corse</span>
+      </div>
+      <div id="lista-prenotazioni"></div>
+    </div>
+
+    <!-- ASSEGNAZIONE -->
+    <div id="screen-assegnazione" class="screen">
+      <p class="section-title">Corse da assegnare ora</p>
+      <div id="prossima-corsa-info"></div>
+      <div id="lista-assegnazione"></div>
+    </div>
+
+    <!-- AUTISTI -->
+    <div id="screen-autisti" class="screen">
+      <div class="add-autista-form">
+        <p class="section-title">Aggiungi autista</p>
+        <div class="field-group" style="margin-bottom:10px;">
+          <label>Nome</label>
+          <input type="text" id="aut-nome" placeholder="Nome e cognome" autocomplete="name" />
+        </div>
+        <div class="field-group" style="margin-bottom:10px;">
+          <label>Numero WhatsApp</label>
+          <input type="tel" id="aut-tel" placeholder="+39 333 1234567" autocomplete="tel" />
+        </div>
+        <button class="btn-primary" style="margin-top:0;" onclick="aggiungiAutista()">
+          <i class="ti ti-user-plus" aria-hidden="true"></i> Aggiungi
+        </button>
+      </div>
+      <div class="divider"></div>
+      <p class="section-title">Autisti registrati</p>
+      <div id="lista-autisti"></div>
+    </div>
+
+    <!-- STORICO -->
+    <div id="screen-storico" class="screen">
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filtraStorico('tutti', this)">Tutte</button>
+        <button class="filter-btn" onclick="filtraStorico('oggi', this)">Oggi</button>
+        <button class="filter-btn" onclick="filtraStorico('settimana', this)">Settimana</button>
+      </div>
+      <div id="lista-storico"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+let corse = [];
+let storico = [];
+let autisti = [];
+let filtroStorico = 'tutti';
+let notificheInviate = new Set();
+let timerInterval = null;
+let deferredInstallPrompt = null;
+let editingId = null;
+
+// ── PWA install prompt ─────────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  mostraInstallBanner();
+});
+
+function mostraInstallBanner() {
+  const container = document.getElementById('install-banner-container');
+  if (!container || container.children.length > 0) return;
+  container.innerHTML = `
+    <div class="install-banner" id="install-banner">
+      <i class="ti ti-device-mobile" aria-hidden="true"></i>
+      <div class="install-banner-text">
+        <div class="install-banner-title">Installa l'app</div>
+        <div class="install-banner-sub">Aggiungila alla schermata home per usarla come app nativa</div>
+        <button class="install-btn" onclick="installaApp()">Installa</button>
+      </div>
+      <button class="btn-icon" style="width:28px;height:28px;border:none;" onclick="document.getElementById('install-banner').remove()" aria-label="Chiudi">
+        <i class="ti ti-x" style="font-size:14px;" aria-hidden="true"></i>
+      </button>
+    </div>`;
+}
+
+async function installaApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    const b = document.getElementById('install-banner');
+    if (b) b.remove();
+  }
+  deferredInstallPrompt = null;
+}
+
+// ── Storage ────────────────────────────────────────────────────────────────
+function caricaDati() {
+  try { const r = localStorage.getItem('taxi-corse'); if (r) corse = JSON.parse(r); } catch(e) { corse = []; }
+  try { const r = localStorage.getItem('taxi-storico'); if (r) storico = JSON.parse(r); } catch(e) { storico = []; }
+  try { const r = localStorage.getItem('taxi-autisti'); if (r) autisti = JSON.parse(r); } catch(e) { autisti = []; }
+  try { const r = localStorage.getItem('taxi-notif'); if (r) notificheInviate = new Set(JSON.parse(r)); } catch(e) { notificheInviate = new Set(); }
+  aggiornaNavBadge();
+  avviaControlloAvvisi();
+}
+
+function salvaCorse() { localStorage.setItem('taxi-corse', JSON.stringify(corse)); aggiornaNavBadge(); }
+function salvaStorico() { localStorage.setItem('taxi-storico', JSON.stringify(storico)); }
+function salvaAutisti() { localStorage.setItem('taxi-autisti', JSON.stringify(autisti)); }
+function salvaNotifiche() { localStorage.setItem('taxi-notif', JSON.stringify([...notificheInviate])); }
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function showScreen(nome, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + nome).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (nome === 'assegnazione') renderAssegnazione();
+  if (nome === 'storico') renderStorico();
+  if (nome === 'prenotazioni') renderPrenotazioni();
+  if (nome === 'autisti') renderAutisti();
+}
+
+// ── Time helpers ───────────────────────────────────────────────────────────
+function corseDatetime(c) {
+  if (!c.data || !c.orario) return null;
+  return new Date(c.data + 'T' + c.orario);
+}
+function minutiMancanti(c) {
+  const dt = corseDatetime(c);
+  if (!dt) return null;
+  return (dt - new Date()) / 60000;
+}
+function corseImminenti() {
+  return corse.filter(c => { const m = minutiMancanti(c); return m !== null && m <= 15; })
+    .sort((a, b) => corseDatetime(a) - corseDatetime(b));
+}
+function corseFuture() {
+  const ora = new Date();
+  return corse.filter(c => { const dt = corseDatetime(c); return dt && dt > ora; })
+    .sort((a, b) => corseDatetime(a) - corseDatetime(b));
+}
+function prossimaCorsaFutura() {
+  const future = corse.filter(c => { const m = minutiMancanti(c); return m !== null && m > 15; })
+    .sort((a, b) => corseDatetime(a) - corseDatetime(b));
+  return future.length > 0 ? future[0] : null;
+}
+
+// ── Nav badges ─────────────────────────────────────────────────────────────
+function aggiornaNavBadge() {
+  const btnA = document.getElementById('nav-assegnazione');
+  const btnP = document.getElementById('nav-prenotazioni');
+  const future = corseFuture();
+  const imminenti = corseImminenti();
+  btnA.innerHTML = `<i class="ti ti-send" aria-hidden="true"></i> Assegna${imminenti.length > 0 ? ` <span class="nav-badge">${imminenti.length}</span>` : ''}`;
+  btnP.innerHTML = `<i class="ti ti-calendar" aria-hidden="true"></i> Corse${future.length > 0 ? ` <span class="nav-badge" style="background:#185FA5">${future.length}</span>` : ''}`;
+}
+
+// ── Inserimento corsa ──────────────────────────────────────────────────────
+function aggiungiCorsa() {
+  const cliente = document.getElementById('cliente').value.trim();
+  const partenza = document.getElementById('partenza').value.trim();
+  const destinazione = document.getElementById('destinazione').value.trim();
+  const data = document.getElementById('data').value;
+  const orario = document.getElementById('orario').value;
+  const note = document.getElementById('note').value.trim();
+  if (!cliente || !partenza || !destinazione || !orario) { mostraFeedback('Compila tutti i campi obbligatori', 'warning'); return; }
+  const corsa = { id: Date.now(), cliente, partenza, destinazione, data, orario, note, autista: '', autistaTel: '', creata: new Date().toISOString() };
+  corse.push(corsa);
+  salvaCorse();
+  document.getElementById('cliente').value = '';
+  document.getElementById('partenza').value = '';
+  document.getElementById('destinazione').value = '';
+  document.getElementById('orario').value = '';
+  document.getElementById('note').value = '';
+  document.getElementById('data').value = new Date().toISOString().split('T')[0];
+  mostraFeedback('Corsa aggiunta ✓', 'success');
+}
+
+// ── Prenotazioni ───────────────────────────────────────────────────────────
+function renderPrenotazioni() {
+  const el = document.getElementById('lista-prenotazioni');
+  const future = corseFuture();
+  document.getElementById('count-prenotazioni').textContent = future.length === 1 ? '1 corsa' : future.length + ' corse';
+  if (future.length === 0) { el.innerHTML = '<div class="empty"><i class="ti ti-calendar"></i>Nessuna corsa futura prenotata</div>'; return; }
+  let html = ''; let lastDate = '';
+  future.forEach(c => {
+    const dataLabel = formatDataLabel(c.data);
+    if (dataLabel !== lastDate) { html += `<div class="timeline-date">${dataLabel}</div>`; lastDate = dataLabel; }
+    const m = minutiMancanti(c);
+    const imminente = m !== null && m <= 30 && m > 0;
+    const countdownStr = m !== null && m > 0 ? (m < 60 ? `tra ${Math.round(m)} min` : `tra ${Math.floor(m/60)}h ${Math.round(m%60)}min`) : '';
+    const isEditing = editingId === c.id;
+    html += `<div class="card ${imminente ? 'imminente' : ''}">
+      <div class="card-header">
+        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;"></i>${esc(c.cliente)}</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="badge ${imminente ? 'badge-imminente' : 'badge-future'}">${imminente ? '<i class="ti ti-bell" aria-hidden="true" style="font-size:11px;"></i> Imminente' : c.orario}</span>
+          <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleEdit(${c.id})" aria-label="Modifica">
+            <i class="ti ${isEditing ? 'ti-x' : 'ti-edit'}" style="font-size:14px;" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-row"><i class="ti ti-map-pin"></i> ${esc(c.partenza)}</div>
+      <div class="card-row"><i class="ti ti-flag"></i> ${esc(c.destinazione)}</div>
+      <div class="card-row"><i class="ti ti-clock"></i> ${c.orario}${countdownStr ? ' — ' + countdownStr : ''}</div>
+      ${c.note ? `<div class="card-row"><i class="ti ti-notes"></i> ${esc(c.note)}</div>` : ''}
+      ${c.autista ? `<div class="driver-badge"><i class="ti ti-steering-wheel" aria-hidden="true" style="font-size:12px;"></i> ${esc(c.autista)}</div>` : ''}
+      ${isEditing ? `
+      <div class="edit-form">
+        <div><label>Cliente</label><input type="text" id="edit-cliente-${c.id}" value="${esc(c.cliente)}" /></div>
+        <div><label>Partenza</label><input type="text" id="edit-partenza-${c.id}" value="${esc(c.partenza)}" /></div>
+        <div><label>Destinazione</label><input type="text" id="edit-destinazione-${c.id}" value="${esc(c.destinazione)}" /></div>
+        <div class="grid-2">
+          <div><label>Data</label><input type="date" id="edit-data-${c.id}" value="${esc(c.data)}" /></div>
+          <div><label>Orario</label><input type="time" id="edit-orario-${c.id}" value="${esc(c.orario)}" /></div>
+        </div>
+        <div><label>Note</label><input type="text" id="edit-note-${c.id}" value="${esc(c.note||'')}" /></div>
+        <div class="edit-actions">
+          <button class="btn-sm confirm" onclick="salvaModifica(${c.id})"><i class="ti ti-check" aria-hidden="true"></i> Salva</button>
+          <button class="btn-sm" onclick="toggleEdit(null)"><i class="ti ti-x" aria-hidden="true"></i> Annulla</button>
+          <button class="btn-sm danger" onclick="eliminaCorsaPrenotazioni(${c.id})"><i class="ti ti-trash" aria-hidden="true"></i> Elimina</button>
+        </div>
+      </div>` : ''}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function toggleEdit(id) {
+  editingId = (editingId === id) ? null : id;
+  renderPrenotazioni();
+  if (id !== null && editingId === id) {
+    setTimeout(() => { const el = document.getElementById('edit-cliente-' + id); if (el) el.focus(); }, 50);
+  }
+}
+
+function salvaModifica(id) {
+  const idx = corse.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  const cliente = document.getElementById('edit-cliente-' + id)?.value.trim();
+  const partenza = document.getElementById('edit-partenza-' + id)?.value.trim();
+  const destinazione = document.getElementById('edit-destinazione-' + id)?.value.trim();
+  const data = document.getElementById('edit-data-' + id)?.value;
+  const orario = document.getElementById('edit-orario-' + id)?.value;
+  const note = document.getElementById('edit-note-' + id)?.value.trim();
+  if (!cliente || !destinazione || !orario) { mostraFeedback('Compila tutti i campi', 'warning'); return; }
+  corse[idx] = { ...corse[idx], cliente, partenza, destinazione, data, orario, note };
+  salvaCorse();
+  editingId = null;
+  renderPrenotazioni();
+  mostraFeedback('Corsa aggiornata ✓', 'success');
+}
+
+function eliminaCorsaPrenotazioni(id) {
+  corse = corse.filter(c => c.id !== id);
+  salvaCorse();
+  editingId = null;
+  renderPrenotazioni();
+  mostraFeedback('Corsa eliminata', 'warning');
+}
+
+// ── Assegnazione ───────────────────────────────────────────────────────────
+function renderAssegnazione() {
+  const el = document.getElementById('lista-assegnazione');
+  const infoEl = document.getElementById('prossima-corsa-info');
+  const imminenti = corseImminenti();
+  if (imminenti.length === 0) {
+    const prossima = prossimaCorsaFutura();
+    if (prossima) {
+      const m = minutiMancanti(prossima);
+      const mancano = m !== null ? (m < 60 ? `${Math.round(m)} min` : `${Math.floor(m/60)}h ${Math.round(m%60)}min`) : '';
+      infoEl.innerHTML = `<div class="prossima-info"><i class="ti ti-clock" aria-hidden="true"></i> Prossima corsa tra ${mancano}: <strong>${esc(prossima.cliente)}</strong> alle ${prossima.orario}</div>`;
+    } else { infoEl.innerHTML = ''; }
+    el.innerHTML = `<div class="empty"><i class="ti ti-send"></i>Nessuna corsa da assegnare ora<p class="empty-sub">Le corse appaiono qui 15 minuti prima dell'orario</p></div>`;
+    return;
+  }
+  infoEl.innerHTML = '';
+
+  const opzioniAutisti = autisti.length > 0
+    ? `<option value="">— Scegli autista —</option>` + autisti.map(a => `<option value="${esc(a.id)}">${esc(a.nome)}</option>`).join('')
+    : `<option value="">Nessun autista registrato</option>`;
+
+  el.innerHTML = imminenti.map(c => {
+    const m = minutiMancanti(c);
+    const mStr = m !== null ? `tra ${Math.round(m)} min` : '';
+    const dataStr = c.data ? formatData(c.data) + ' ' : '';
+    return `<div class="card imminente">
+      <div class="card-header">
+        <div class="card-title"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;margin-right:5px;"></i>${esc(c.cliente)}</div>
+        <span class="badge badge-imminente"><i class="ti ti-bell" aria-hidden="true" style="font-size:11px;"></i> ${mStr}</span>
+      </div>
+      <div class="card-row"><i class="ti ti-map-pin"></i> ${esc(c.partenza)}</div>
+      <div class="card-row"><i class="ti ti-flag"></i> ${esc(c.destinazione)}</div>
+      <div class="card-row"><i class="ti ti-clock"></i> ${dataStr}${c.orario}</div>
+      ${c.note ? `<div class="card-row"><i class="ti ti-notes"></i> ${esc(c.note)}</div>` : ''}
+      <div class="driver-select" style="margin-top:10px;">
+        <label style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">Seleziona autista</label>
+        <select id="sel-${c.id}" onchange="aggiornaBtnWA(${c.id})">${opzioniAutisti}</select>
+      </div>
+      <div class="card-actions">
+        <button class="btn-sm confirm" onclick="assegnaCorsa(${c.id})"><i class="ti ti-check" aria-hidden="true"></i> Assegna</button>
+        <button class="btn-sm whatsapp" id="wa-btn-${c.id}" onclick="inviaWhatsApp(${c.id})" style="display:none;">
+          <i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Invia su WhatsApp
+        </button>
+        <button class="btn-sm danger" onclick="eliminaCorsa(${c.id})"><i class="ti ti-trash" aria-hidden="true"></i> Elimina</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function aggiornaBtnWA(corsaId) {
+  const sel = document.getElementById('sel-' + corsaId);
+  const waBtn = document.getElementById('wa-btn-' + corsaId);
+  if (!sel || !waBtn) return;
+  const autId = sel.value;
+  const aut = autisti.find(a => String(a.id) === String(autId));
+  if (aut && aut.tel) {
+    waBtn.style.display = 'flex';
+  } else {
+    waBtn.style.display = 'none';
+  }
+}
+
+function inviaWhatsApp(corsaId) {
+  const sel = document.getElementById('sel-' + corsaId);
+  if (!sel || !sel.value) { mostraFeedback('Seleziona prima un autista', 'warning'); return; }
+  const aut = autisti.find(a => String(a.id) === String(sel.value));
+  if (!aut) return;
+  const corsa = corse.find(c => c.id === corsaId);
+  if (!corsa) return;
+  const tel = aut.tel.replace(/\s+/g, '').replace(/^\+/, '');
+  const testo = costruisciMessaggio(corsa, aut.nome);
+  const url = `https://wa.me/${tel}?text=${encodeURIComponent(testo)}`;
+  window.open(url, '_blank');
+}
+
+function costruisciMessaggio(corsa, nomeAutista) {
+  const dataStr = corsa.data ? formatData(corsa.data) : '';
+  let msg = `🚖 *NUOVA CORSA*\n\n`;
+  msg += `👤 *Cliente:* ${corsa.cliente}\n`;
+  msg += `📍 *Partenza:* ${corsa.partenza}\n`;
+  msg += `🏁 *Destinazione:* ${corsa.destinazione}\n`;
+  msg += `🕐 *Orario:* ${dataStr} ${corsa.orario}`;
+  if (corsa.note) msg += `\n📝 *Note:* ${corsa.note}`;
+  msg += `\n\nCiao ${nomeAutista}, sei assegnato a questa corsa. Conferma appena puoi.`;
+  return msg;
+}
+
+function assegnaCorsa(id) {
+  const sel = document.getElementById('sel-' + id);
+  let nomeAutista = '';
+  let telAutista = '';
+  if (sel && sel.value) {
+    const aut = autisti.find(a => String(a.id) === String(sel.value));
+    if (aut) { nomeAutista = aut.nome; telAutista = aut.tel; }
+  }
+  if (!nomeAutista) { mostraFeedback('Seleziona un autista dalla lista', 'warning'); return; }
+  const idx = corse.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  const corsa = { ...corse[idx], autista: nomeAutista, autistaTel: telAutista, assegnata: new Date().toISOString() };
+  storico.unshift(corsa);
+  corse.splice(idx, 1);
+  salvaCorse();
+  salvaStorico();
+  renderAssegnazione();
+  mostraFeedback(`Corsa assegnata a ${nomeAutista} ✓`, 'success');
+}
+
+function eliminaCorsa(id) {
+  corse = corse.filter(c => c.id !== id);
+  salvaCorse();
+  renderAssegnazione();
+}
+
+// ── Autisti ────────────────────────────────────────────────────────────────
+function aggiungiAutista() {
+  const nome = document.getElementById('aut-nome').value.trim();
+  const tel = document.getElementById('aut-tel').value.trim();
+  if (!nome || !tel) { mostraFeedback('Inserisci nome e numero', 'warning'); return; }
+  const aut = { id: Date.now(), nome, tel };
+  autisti.push(aut);
+  salvaAutisti();
+  document.getElementById('aut-nome').value = '';
+  document.getElementById('aut-tel').value = '';
+  renderAutisti();
+  mostraFeedback(`${nome} aggiunto ✓`, 'success');
+}
+
+function eliminaAutista(id) {
+  autisti = autisti.filter(a => a.id !== id);
+  salvaAutisti();
+  renderAutisti();
+}
+
+function chiamaAutista(tel) {
+  window.location.href = 'tel:' + tel;
+}
+
+function renderAutisti() {
+  const el = document.getElementById('lista-autisti');
+  if (autisti.length === 0) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-users"></i>Nessun autista registrato<p class="empty-sub">Aggiungi autisti per assegnar loro le corse</p></div>';
+    return;
+  }
+  el.innerHTML = autisti.map(a => {
+    const iniziali = a.nome.split(' ').map(p => p[0]).join('').toUpperCase().slice(0,2);
+    const tel = a.tel.replace(/\s+/g,'').replace(/^\+/,'');
+    return `<div class="autista-item">
+      <div class="autista-avatar">${esc(iniziali)}</div>
+      <div class="autista-info">
+        <div class="autista-nome">${esc(a.nome)}</div>
+        <div class="autista-tel">${esc(a.tel)}</div>
+      </div>
+      <div class="autista-actions">
+        <button class="btn-icon" onclick="chiamaAutista('${esc(a.tel)}')" aria-label="Chiama ${esc(a.nome)}">
+          <i class="ti ti-phone" aria-hidden="true"></i>
+        </button>
+        <button class="btn-icon wa" onclick="window.open('https://wa.me/${tel}','_blank')" aria-label="WhatsApp ${esc(a.nome)}">
+          <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+        </button>
+        <button class="btn-icon del" onclick="eliminaAutista(${a.id})" aria-label="Elimina ${esc(a.nome)}">
+          <i class="ti ti-trash" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Storico ────────────────────────────────────────────────────────────────
+function renderStorico() {
+  const el = document.getElementById('lista-storico');
+  let lista = [...storico];
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  if (filtroStorico === 'oggi') lista = lista.filter(c => { const d = new Date(c.assegnata); d.setHours(0,0,0,0); return d.getTime() === oggi.getTime(); });
+  else if (filtroStorico === 'settimana') { const s = new Date(oggi); s.setDate(oggi.getDate()-7); lista = lista.filter(c => new Date(c.assegnata) >= s); }
+  if (lista.length === 0) { el.innerHTML = '<div class="empty"><i class="ti ti-history"></i>Nessuna corsa nello storico</div>'; return; }
+  el.innerHTML = lista.map(c => {
+    const dataCorsa = c.data ? formatData(c.data) + ' ' : '';
+    const assegnataStr = c.assegnata ? formatDataOra(c.assegnata) : '';
+    const tel = c.autistaTel ? c.autistaTel.replace(/\s+/g,'').replace(/^\+/,'') : '';
+    return `<div class="storico-item">
+      <div class="storico-header">
+        <span class="storico-title"><i class="ti ti-user" aria-hidden="true" style="font-size:13px;margin-right:4px;"></i>${esc(c.cliente)}</span>
+        <span class="storico-date">${assegnataStr}</span>
+      </div>
+      <div class="storico-row"><i class="ti ti-map-pin" aria-hidden="true"></i> ${esc(c.partenza)} → ${esc(c.destinazione)}</div>
+      <div class="storico-row"><i class="ti ti-clock" aria-hidden="true"></i> ${dataCorsa}${c.orario}</div>
+      ${c.note ? `<div class="storico-row"><i class="ti ti-notes" aria-hidden="true"></i> ${esc(c.note)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <div class="driver-badge"><i class="ti ti-steering-wheel" aria-hidden="true" style="font-size:12px;"></i> ${esc(c.autista)}</div>
+        ${tel ? `<button class="btn-sm" style="padding:3px 10px;font-size:12px;" onclick="window.open('https://wa.me/${tel}','_blank')">
+          <i class="ti ti-brand-whatsapp" aria-hidden="true" style="font-size:13px;"></i> WhatsApp
+        </button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filtraStorico(filtro, btn) {
+  filtroStorico = filtro;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStorico();
+}
+
+// ── Avvisi ─────────────────────────────────────────────────────────────────
+function avviaControlloAvvisi() {
+  if (timerInterval) clearInterval(timerInterval);
+  controllaAvvisi();
+  timerInterval = setInterval(() => {
+    controllaAvvisi();
+    const attiva = document.querySelector('.screen.active');
+    if (!attiva) return;
+    if (attiva.id === 'screen-prenotazioni') renderPrenotazioni();
+    if (attiva.id === 'screen-assegnazione') renderAssegnazione();
+  }, 30000);
+}
+
+function controllaAvvisi() {
+  corse.forEach(c => {
+    const m = minutiMancanti(c);
+    if (m !== null && m > 0 && m <= 15) {
+      const chiave = 'avviso-' + c.id;
+      if (!notificheInviate.has(chiave)) {
+        notificheInviate.add(chiave);
+        salvaNotifiche();
+        mostraAvviso15min(c, Math.round(m));
+        if (window.Notification && Notification.permission === 'granted') {
+          new Notification('Corsa imminente', { body: `${c.cliente} — ${c.partenza} → ${c.destinazione} alle ${c.orario}`, icon: 'icon-192.png' });
+        }
+      }
+    }
+  });
+  aggiornaNavBadge();
+}
+
+function mostraAvviso15min(c, minuti) {
+  const container = document.getElementById('notif-container');
+  const id = 'avviso-' + c.id;
+  if (document.getElementById(id)) return;
+  const div = document.createElement('div');
+  div.id = id;
+  div.className = 'notif-bar';
+  div.innerHTML = `<i class="ti ti-bell" aria-hidden="true"></i>
+    <div class="notif-bar-text">
+      <div class="notif-bar-title">Corsa tra ~${minuti} minuti</div>
+      <div class="notif-bar-sub">${esc(c.cliente)} · ${esc(c.partenza)} → ${esc(c.destinazione)} alle ${c.orario}</div>
+    </div>
+    <button class="notif-bar-close" onclick="chiudiAvviso('${id}')" aria-label="Chiudi">&#x2715;</button>`;
+  container.appendChild(div);
+  setTimeout(() => chiudiAvviso(id), 60000);
+}
+
+function chiudiAvviso(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+function mostraFeedback(msg, tipo) {
+  const bgMap = { success: 'var(--bg-success,#E1F5EE)', warning: 'var(--bg-warning,#FAEEDA)', danger: 'var(--bg-danger,#FCEBEB)' };
+  const colorMap = { success: '#085041', warning: '#633806', danger: '#A32D2D' };
+  const borderMap = { success: '#1D9E75', warning: '#EF9F27', danger: '#E24B4A' };
+  const iconMap = { success: 'ti-check', warning: 'ti-alert-triangle', danger: 'ti-alert-circle' };
+  const id = 'fb-' + Date.now();
+  const div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = `background:${bgMap[tipo]};border:1px solid ${borderMap[tipo]};border-radius:8px;padding:9px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:13px;color:${colorMap[tipo]};font-weight:500;font-family:var(--font);`;
+  div.innerHTML = `<i class="ti ${iconMap[tipo]}" aria-hidden="true"></i> ${esc(msg)}`;
+  document.getElementById('notif-container').appendChild(div);
+  setTimeout(() => { const el = document.getElementById(id); if (el) el.remove(); }, 2500);
+}
+
+// ── Formatters ─────────────────────────────────────────────────────────────
+function formatData(str) { if (!str) return ''; const [y,m,d] = str.split('-'); return `${d}/${m}/${y}`; }
+function formatDataOra(iso) { const d = new Date(iso); return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+function formatDataLabel(str) {
+  if (!str) return '';
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const domani = new Date(oggi); domani.setDate(oggi.getDate()+1);
+  const d = new Date(str+'T00:00:00');
+  if (d.getTime() === oggi.getTime()) return 'Oggi';
+  if (d.getTime() === domani.getTime()) return 'Domani';
+  return d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+}
+function esc(str) { if(!str)return''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.getElementById('data').value = new Date().toISOString().split('T')[0];
+if (window.Notification && Notification.permission === 'default') Notification.requestPermission();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW:', err));
+}
+caricaDati();
+</script>
+</body>
+</html>
