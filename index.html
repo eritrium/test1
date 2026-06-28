@@ -43,7 +43,7 @@
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text); min-height: 100vh; overscroll-behavior: none; padding-bottom: calc(65px + var(--safe-bottom)); } /* Added bottom padding for bar */
+body { font-family: var(--font); background: var(--bg-tertiary); color: var(--text); min-height: 100vh; overscroll-behavior: none; padding-bottom: calc(65px + var(--safe-bottom)); }
 .app-shell { max-width: 680px; margin: 0 auto; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
 
 header {
@@ -53,9 +53,9 @@ header {
   background: var(--bg);
 }
 .app-title { font-size: 19px; font-weight: 600; display: flex; align-items: center; gap: 10px; color: var(--text); }
-.app-title i { font-size: 22px; color: var(--accent); } /* Use accent color for title icon */
+.app-title i { font-size: 22px; color: var(--accent); }
 
-/* Modern Bottom Navigation Bar */
+/* Bottom Navigation Bar */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -75,7 +75,7 @@ header {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--text-tertiary); /* Dimmer color for inactive */
+  color: var(--text-tertiary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,25 +83,16 @@ header {
   gap: 4px;
   padding: 5px;
   transition: color 0.15s, transform 0.1s;
-  position: relative; /* For badge */
+  position: relative;
 }
-.nav-btn.active {
-  color: var(--accent); /* Accent color for active */
-}
-.nav-btn i {
-  font-size: 22px; /* Large icons for mobile */
-}
-.nav-label {
-  font-size: 10px; /* Small label below icon */
-  font-weight: 500;
-}
-.nav-btn:active {
-  transform: scale(0.95); /* Provide click feedback */
-}
+.nav-btn.active { color: var(--accent); }
+.nav-btn i { font-size: 22px; }
+.nav-label { font-size: 10px; font-weight: 500; }
+.nav-btn:active { transform: scale(0.95); }
 .nav-badge {
   position: absolute;
   top: -2px;
-  right: 18px; /* Offset badge */
+  right: 18px;
   background: #E24B4A;
   color: #fff;
   font-size: 10px;
@@ -193,19 +184,96 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 .edit-form input { font-size: 13px; padding: 7px 10px; }
 .edit-actions { display: flex; gap: 8px; margin-top: 4px; }
 
-/* Autisti screen */
-.autista-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
-.autista-avatar { width: 44px; height: 44px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 16px; color: #0C447C; flex-shrink: 0; }
+/* --- AUTISTI SCREEN - AGGIORNATO E CORRETTO PER EVITARE SOVRAPPOSIZIONI --- */
+.autista-item { 
+  background: var(--bg); 
+  border: 0.5px solid var(--border); 
+  border-radius: var(--radius-lg); 
+  padding: 1.2rem; 
+  margin-bottom: 12px; 
+  display: flex; 
+  flex-direction: row;
+  align-items: center; 
+  gap: 14px; 
+}
+.autista-avatar { 
+  width: 46px; 
+  height: 46px; 
+  border-radius: 50%; 
+  background: #E6F1FB; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-weight: 600; 
+  font-size: 15px; 
+  color: #0C447C; 
+  flex-shrink: 0; 
+}
 @media (prefers-color-scheme: dark) { .autista-avatar { background: #042C53; color: #85B7EB; } }
-.autista-info { flex: 1; min-width: 0; }
-.autista-nome { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
-.autista-tel { font-size: 13px; color: var(--text-secondary); }
-.autista-actions { display: flex; gap: 8px; }
-.btn-icon { width: 38px; height: 38px; border-radius: var(--radius-md); border: 0.5px solid var(--border-hover); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 19px; transition: background 0.12s; }
+
+/* Contenitore principale delle informazioni dell'autista */
+.autista-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0; /* Impedisce al testo lungo di rompere il layout */
+}
+/* Sotto-blocco per i testi */
+.autista-info { 
+  min-width: 0; 
+}
+.autista-nome { 
+  font-size: 16px; 
+  font-weight: 600; 
+  margin-bottom: 3px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Taglia ordinatamente il nome se è troppo lungo */
+}
+.autista-tel { 
+  font-size: 13px; 
+  color: var(--text-secondary); 
+}
+/* Sotto-blocco per i pulsanti azione */
+.autista-actions { 
+  display: flex; 
+  gap: 10px; 
+  align-items: center;
+}
+.btn-icon { 
+  width: 42px; 
+  height: 42px; 
+  border-radius: var(--radius-md); 
+  border: 0.5px solid var(--border-hover); 
+  background: transparent; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  color: var(--text-secondary); 
+  font-size: 20px; 
+  transition: background 0.12s; 
+  flex-shrink: 0;
+}
 .btn-icon:active { opacity: 0.7; }
 .btn-icon.wa { background: #25D366; color: #fff; border-color: transparent; }
-.btn-icon.del { color: #A32D2D; border-color: #F7C1C1; }
+.btn-icon.del { color: #A32D2D; border-color: #F7C1C1; margin-left: auto; } /* Spinge il cestino leggermente a destra */
 @media (prefers-color-scheme: dark) { .btn-icon.del { color: #F09595; border-color: #791F1F; } }
+
+/* Responsive: Se lo schermo è mobile/stretto, mette le icone SOTTO al testo per evitare sovrapposizioni */
+@media (max-width: 480px) {
+  .autista-content-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .autista-actions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
+}
+/* ------------------------------------------------------------------------- */
 
 .add-autista-form { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
 .add-autista-form .section-title { margin-bottom: 10px; }
@@ -319,7 +387,7 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
     </div>
   </main>
 
-  <!-- Modern Bottom Navigation Bar -->
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="showScreen('inserimento', this)">
       <i class="ti ti-plus" aria-hidden="true"></i>
@@ -328,12 +396,12 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
     <button class="nav-btn" onclick="showScreen('prenotazioni', this)" id="nav-prenotazioni">
       <i class="ti ti-calendar-event" aria-hidden="true"></i>
       <span class="nav-label">Corse</span>
-      <span id="nav-badge-corse"></span> <!-- Badge container -->
+      <span id="nav-badge-corse"></span>
     </button>
     <button class="nav-btn" onclick="showScreen('assegnazione', this)" id="nav-assegnazione">
       <i class="ti ti-send" aria-hidden="true"></i>
       <span class="nav-label">Assegna</span>
-      <span id="nav-badge-assegna"></span> <!-- Badge container -->
+      <span id="nav-badge-assegna"></span>
     </button>
     <button class="nav-btn" onclick="showScreen('autisti', this)">
       <i class="ti ti-users" aria-hidden="true"></i>
@@ -356,7 +424,7 @@ let timerInterval = null;
 let deferredInstallPrompt = null;
 let editingId = null;
 
-// ── PWA install prompt ─────────────────────────────────────────────────────
+// PWA install prompt
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredInstallPrompt = e;
@@ -391,7 +459,7 @@ async function installaApp() {
   deferredInstallPrompt = null;
 }
 
-// ── Storage ────────────────────────────────────────────────────────────────
+// Storage
 function caricaDati() {
   try { const r = localStorage.getItem('taxi-corse'); if (r) corse = JSON.parse(r); } catch(e) { corse = []; }
   try { const r = localStorage.getItem('taxi-storico'); if (r) storico = JSON.parse(r); } catch(e) { storico = []; }
@@ -406,7 +474,7 @@ function salvaStorico() { localStorage.setItem('taxi-storico', JSON.stringify(st
 function salvaAutisti() { localStorage.setItem('taxi-autisti', JSON.stringify(autisti)); }
 function salvaNotifiche() { localStorage.setItem('taxi-notif', JSON.stringify([...notificheInviate])); }
 
-// ── Navigation ─────────────────────────────────────────────────────────────
+// Navigation
 function showScreen(nome, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -418,7 +486,7 @@ function showScreen(nome, btn) {
   if (nome === 'autisti') renderAutisti();
 }
 
-// ── Time helpers ───────────────────────────────────────────────────────────
+// Time helpers
 function corseDatetime(c) {
   if (!c.data || !c.orario) return null;
   return new Date(c.data + 'T' + c.orario);
@@ -443,7 +511,7 @@ function prossimaCorsaFutura() {
   return future.length > 0 ? future[0] : null;
 }
 
-// ── Nav badges ─────────────────────────────────────────────────────────────
+// Nav badges
 function aggiornaNavBadge() {
   const badgeA = document.getElementById('nav-badge-assegna');
   const badgeP = document.getElementById('nav-badge-corse');
@@ -454,7 +522,7 @@ function aggiornaNavBadge() {
   badgeP.innerHTML = future.length > 0 ? `<span class="nav-badge">${future.length}</span>` : '';
 }
 
-// ── Inserimento corsa ──────────────────────────────────────────────────────
+// Inserimento corsa
 function aggiungiCorsa() {
   const cliente = document.getElementById('cliente').value.trim();
   const partenza = document.getElementById('partenza').value.trim();
@@ -475,7 +543,7 @@ function aggiungiCorsa() {
   mostraFeedback('Corsa aggiunta ✓', 'success');
 }
 
-// ── Prenotazioni ───────────────────────────────────────────────────────────
+// Prenotazioni
 function renderPrenotazioni() {
   const el = document.getElementById('lista-prenotazioni');
   const future = corseFuture();
@@ -558,7 +626,7 @@ function eliminaCorsaPrenotazioni(id) {
   mostraFeedback('Corsa eliminata', 'warning');
 }
 
-// ── Assegnazione ───────────────────────────────────────────────────────────
+// Assegnazione
 function renderAssegnazione() {
   const el = document.getElementById('lista-assegnazione');
   const infoEl = document.getElementById('prossima-corsa-info');
@@ -641,7 +709,7 @@ function costruisciMessaggio(corsa, nomeAutista) {
   msg += `🏁 *Destinazione:* ${corsa.destinazione}\n`;
   msg += `🕐 *Orario:* ${dataStr} ${corsa.orario}`;
   if (corsa.note) msg += `\n📝 *Note:* ${corsa.note}`;
-  msg += `\n\nCiao ${nomeAutista}, sei assegnato a questa corsa. Conferma appena puoi.`;
+  msg += `\n\nCiao ${nomeAutista}, sei assegnato a questa corsa. Confirm appena puoi.`;
   return msg;
 }
 
@@ -665,13 +733,19 @@ function assegnaCorsa(id) {
   mostraFeedback(`Corsa assegnata a ${nomeAutista} ✓`, 'success');
 }
 
+function部署eliminaCorsa(id) {
+  corse = corse.filter(c => c.id !== id);
+  salvaCorse();
+  renderAssegnazione();
+}
+
 function eliminaCorsa(id) {
   corse = corse.filter(c => c.id !== id);
   salvaCorse();
   renderAssegnazione();
 }
 
-// ── Autisti ────────────────────────────────────────────────────────────────
+// Autisti
 function aggiungiAutista() {
   const nome = document.getElementById('aut-nome').value.trim();
   const tel = document.getElementById('aut-tel').value.trim();
@@ -695,6 +769,7 @@ function chiamaAutista(tel) {
   window.location.href = 'tel:' + tel;
 }
 
+/* RENDERING AUTISTI AGGIORNATO CON WRAPPER ANTI-SOVRAPPOSIZIONE */
 function renderAutisti() {
   const el = document.getElementById('lista-autisti');
   if (autisti.length === 0) {
@@ -706,26 +781,28 @@ function renderAutisti() {
     const tel = a.tel.replace(/\s+/g,'').replace(/^\+/,'');
     return `<div class="autista-item">
       <div class="autista-avatar">${esc(iniziali)}</div>
-      <div class="autista-info">
-        <div class="autista-nome">${esc(a.nome)}</div>
-        <div class="autista-tel">${esc(a.tel)}</div>
-      </div>
-      <div class="autista-actions">
-        <button class="btn-icon" onclick="chiamaAutista('${esc(a.tel)}')" aria-label="Chiama ${esc(a.nome)}">
-          <i class="ti ti-phone" aria-hidden="true"></i>
-        </button>
-        <button class="btn-icon wa" onclick="window.open('https://wa.me/${tel}','_blank')" aria-label="WhatsApp ${esc(a.nome)}">
-          <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
-        </button>
-        <button class="btn-icon del" onclick="eliminaAutista(${a.id})" aria-label="Elimina ${esc(a.nome)}">
-          <i class="ti ti-trash" aria-hidden="true"></i>
-        </button>
+      <div class="autista-content-wrapper">
+        <div class="autista-info">
+          <div class="autista-nome">${esc(a.nome)}</div>
+          <div class="autista-tel">${esc(a.tel)}</div>
+        </div>
+        <div class="autista-actions">
+          <button class="btn-icon" onclick="chiamaAutista('${esc(a.tel)}')" aria-label="Chiama ${esc(a.nome)}">
+            <i class="ti ti-phone" aria-hidden="true"></i>
+          </button>
+          <button class="btn-icon wa" onclick="window.open('https://wa.me/${tel}','_blank')" aria-label="WhatsApp ${esc(a.nome)}">
+            <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+          </button>
+          <button class="btn-icon del" onclick="eliminaAutista(${a.id})" aria-label="Elimina ${esc(a.nome)}">
+            <i class="ti ti-trash" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── Storico ────────────────────────────────────────────────────────────────
+// Storico
 function renderStorico() {
   const el = document.getElementById('lista-storico');
   let lista = [...storico];
@@ -762,7 +839,7 @@ function filtraStorico(filtro, btn) {
   renderStorico();
 }
 
-// ── Avvisi ─────────────────────────────────────────────────────────────────
+// Avvisi
 function avviaControlloAvvisi() {
   if (timerInterval) clearInterval(timerInterval);
   controllaAvvisi();
@@ -826,7 +903,7 @@ function mostraFeedback(msg, tipo) {
   setTimeout(() => { const el = document.getElementById(id); if (el) el.remove(); }, 2500);
 }
 
-// ── Formatters ─────────────────────────────────────────────────────────────
+// Formatters
 function formatData(str) { if (!str) return ''; const [y,m,d] = str.split('-'); return `${d}/${m}/${y}`; }
 function formatDataOra(iso) { const d = new Date(iso); return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
 function formatDataLabel(str) {
@@ -840,7 +917,7 @@ function formatDataLabel(str) {
 }
 function esc(str) { if(!str)return''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-// ── Init ───────────────────────────────────────────────────────────────────
+// Init
 document.getElementById('data').value = new Date().toISOString().split('T')[0];
 if (window.Notification && Notification.permission === 'default') Notification.requestPermission();
 if ('serviceWorker' in navigator) {

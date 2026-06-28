@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taxi-gestionale-v2'; // Aggiornato a v2 per forzare il reset
+const CACHE_NAME = 'taxi-gestionale-v3'; // Aggiornato a v2 per forzare il reset
 const ASSETS = [
   './',
   './index.html',
