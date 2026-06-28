@@ -184,7 +184,7 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
 .edit-form input { font-size: 13px; padding: 7px 10px; }
 .edit-actions { display: flex; gap: 8px; margin-top: 4px; }
 
-/* --- AUTISTI SCREEN - AGGIORNATO E CORRETTO PER EVITARE SOVRAPPOSIZIONI --- */
+/* --- SEZIONE AUTISTI AGGIORNATA E COMPLETAMENTE RIFATTA --- */
 .autista-item { 
   background: var(--bg); 
   border: 0.5px solid var(--border); 
@@ -192,58 +192,58 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
   padding: 1.2rem; 
   margin-bottom: 12px; 
   display: flex; 
-  flex-direction: row;
   align-items: center; 
   gap: 14px; 
 }
 .autista-avatar { 
-  width: 46px; 
-  height: 46px; 
+  width: 44px; 
+  height: 44px; 
   border-radius: 50%; 
   background: #E6F1FB; 
   display: flex; 
   align-items: center; 
   justify-content: center; 
   font-weight: 600; 
-  font-size: 15px; 
+  font-size: 14px; 
   color: #0C447C; 
   flex-shrink: 0; 
 }
 @media (prefers-color-scheme: dark) { .autista-avatar { background: #042C53; color: #85B7EB; } }
 
-/* Contenitore principale delle informazioni dell'autista */
+/* Contenitore a due colonne: Testo a sinistra, Bottoni a destra */
 .autista-content-wrapper {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0; /* Impedisce al testo lungo di rompere il layout */
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-width: 0; 
 }
-/* Sotto-blocco per i testi */
 .autista-info { 
   min-width: 0; 
+  flex: 1;
 }
 .autista-nome { 
   font-size: 16px; 
   font-weight: 600; 
-  margin-bottom: 3px; 
+  margin-bottom: 2px; 
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Taglia ordinatamente il nome se è troppo lungo */
+  text-overflow: ellipsis; 
 }
 .autista-tel { 
   font-size: 13px; 
   color: var(--text-secondary); 
 }
-/* Sotto-blocco per i pulsanti azione */
 .autista-actions { 
   display: flex; 
-  gap: 10px; 
+  gap: 8px; 
   align-items: center;
+  flex-shrink: 0;
 }
 .btn-icon { 
-  width: 42px; 
-  height: 42px; 
+  width: 38px; 
+  height: 38px; 
   border-radius: var(--radius-md); 
   border: 0.5px solid var(--border-hover); 
   background: transparent; 
@@ -252,25 +252,24 @@ input:focus, select:focus { outline: none; border-color: var(--text-secondary); 
   align-items: center; 
   justify-content: center; 
   color: var(--text-secondary); 
-  font-size: 20px; 
+  font-size: 18px; 
   transition: background 0.12s; 
-  flex-shrink: 0;
 }
 .btn-icon:active { opacity: 0.7; }
 .btn-icon.wa { background: #25D366; color: #fff; border-color: transparent; }
-.btn-icon.del { color: #A32D2D; border-color: #F7C1C1; margin-left: auto; } /* Spinge il cestino leggermente a destra */
+.btn-icon.del { color: #A32D2D; border-color: #F7C1C1; }
 @media (prefers-color-scheme: dark) { .btn-icon.del { color: #F09595; border-color: #791F1F; } }
 
-/* Responsive: Se lo schermo è mobile/stretto, mette le icone SOTTO al testo per evitare sovrapposizioni */
+/* Se lo schermo è stretto (smartphone), rompe la riga e sposta i bottoni SOTTO */
 @media (max-width: 480px) {
   .autista-content-wrapper {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
   }
   .autista-actions {
     width: 100%;
     justify-content: flex-start;
-    margin-top: 4px;
   }
 }
 /* ------------------------------------------------------------------------- */
@@ -618,6 +617,14 @@ function salvaModifica(id) {
   mostraFeedback('Corsa aggiornata ✓', 'success');
 }
 
+functionBox eliminaCorsaPrenotazioni(id) {
+  corse = corse.filter(c => c.id !== id);
+  salvaCorse();
+  editingId = null;
+  renderPrenotazioni();
+  mostraFeedback('Corsa eliminata', 'warning');
+}
+
 function eliminaCorsaPrenotazioni(id) {
   corse = corse.filter(c => c.id !== id);
   salvaCorse();
@@ -733,12 +740,6 @@ function assegnaCorsa(id) {
   mostraFeedback(`Corsa assegnata a ${nomeAutista} ✓`, 'success');
 }
 
-function部署eliminaCorsa(id) {
-  corse = corse.filter(c => c.id !== id);
-  salvaCorse();
-  renderAssegnazione();
-}
-
 function eliminaCorsa(id) {
   corse = corse.filter(c => c.id !== id);
   salvaCorse();
@@ -769,7 +770,6 @@ function chiamaAutista(tel) {
   window.location.href = 'tel:' + tel;
 }
 
-/* RENDERING AUTISTI AGGIORNATO CON WRAPPER ANTI-SOVRAPPOSIZIONE */
 function renderAutisti() {
   const el = document.getElementById('lista-autisti');
   if (autisti.length === 0) {
@@ -879,7 +879,7 @@ function mostraAvviso15min(c, minuti) {
   div.className = 'notif-bar';
   div.innerHTML = `<i class="ti ti-bell" aria-hidden="true"></i>
     <div class="notif-bar-text">
-      <div class="notif-bar-title">Corsa tra ~${minuti} minuti</div>
+      <div class="notif-bar-title">Corsa tra ~${minuti} minutes</div>
       <div class="notif-bar-sub">${esc(c.cliente)} · ${esc(c.partenza)} → ${esc(c.destinazione)} alle ${c.orario}</div>
     </div>
     <button class="notif-bar-close" onclick="chiudiAvviso('${id}')" aria-label="Chiudi">&#x2715;</button>`;
